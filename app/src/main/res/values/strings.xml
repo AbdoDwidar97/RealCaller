@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Realcaller</string>
+    <string name="SearchTextHint"><![CDATA[Search numbers, names & more]]></string>
+</resources>
