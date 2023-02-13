@@ -69,13 +69,14 @@
         app:layout_constraintTop_toBottomOf="@+id/shapeableImageView" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_16sdp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal"
         app:layout_constraintTop_toBottomOf="@+id/txtContactName">
 
         <!-- Call Button -->
@@ -89,67 +90,99 @@
                 android:id="@+id/btnCall"
                 android:layout_width="@dimen/_46sdp"
                 android:layout_height="@dimen/_46sdp"
-                android:src="@drawable/call_icn"
-                android:background="@drawable/contact_details_buttons_theme" />
+                android:background="@drawable/contact_details_buttons_theme"
+                android:src="@drawable/call_icn" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_3sdp"
                 android:text="Call"
-                android:textSize="@dimen/_12ssp"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12ssp" />
         </LinearLayout>
 
         <!-- Message Button -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:layout_marginStart="@dimen/_16sdp"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageButton
                 android:id="@+id/btnSendMessage"
                 android:layout_width="@dimen/_46sdp"
                 android:layout_height="@dimen/_46sdp"
-                android:src="@drawable/msg_icn"
-                android:background="@drawable/contact_details_buttons_theme" />
+                android:background="@drawable/contact_details_buttons_theme"
+                android:src="@drawable/msg_icn" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_3sdp"
                 android:text="Message"
-                android:textSize="@dimen/_12ssp"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12ssp" />
         </LinearLayout>
 
         <!-- Block Button -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:layout_marginStart="@dimen/_16sdp"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageButton
                 android:id="@+id/btnBlock"
                 android:layout_width="@dimen/_46sdp"
                 android:layout_height="@dimen/_46sdp"
-                android:src="@drawable/block_icn"
-                android:background="@drawable/contact_details_buttons_theme" />
+                android:background="@drawable/contact_details_buttons_theme"
+                android:src="@drawable/block_icn" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_3sdp"
                 android:text="Block"
-                android:textSize="@dimen/_12ssp"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12ssp" />
         </LinearLayout>
 
-
     </LinearLayout>
+
+    <!-- phone number layout -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_18sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_14sdp"
+        android:paddingStart="@dimen/_14sdp"
+        android:orientation="horizontal"
+        android:background="@drawable/default_border_theme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+        <ImageView
+            android:id="@+id/imgLog"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:background="@drawable/callback_icn"/>
+
+        <TextView
+            android:id="@+id/txtPhoneNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="01001234789"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_13ssp"
+            android:layout_toRightOf="@id/imgLog"/>
+
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
