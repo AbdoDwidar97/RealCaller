@@ -25,7 +25,8 @@ class MainViewModel : ViewModel()
         CallLog.Calls._ID,
         CallLog.Calls.NUMBER,
         CallLog.Calls.TYPE,
-        CallLog.Calls.DATE
+        CallLog.Calls.DATE,
+        CallLog.Calls.CACHED_NAME
     ).toTypedArray()
 
     fun getCallLogs() : LiveData<HashMap<String, ArrayList<String>>> = localMyCallLogs
@@ -50,6 +51,7 @@ class MainViewModel : ViewModel()
         var number = result!!.getColumnIndex(CallLog.Calls.NUMBER)
         var type = result.getColumnIndex(CallLog.Calls.TYPE)
         var callDate = result.getColumnIndex(CallLog.Calls.DATE)
+        var contactName = result.getColumnIndex(CallLog.Calls.CACHED_NAME)
 
         val callLogsHashMap = HashMap<String, ArrayList<String>>()
         val callLogsNumbers = arrayListOf<MyCallLog>()
@@ -67,7 +69,10 @@ class MainViewModel : ViewModel()
                 else -> "H5a"
             }
 
-            var myCallLog = MyCallLog(result.getString(number), result.getString(number), dateString, stringType)
+            var nm = result.getString(number)
+            if (result.getString(contactName) != null) nm = result.getString(contactName)
+
+            var myCallLog = MyCallLog(nm, result.getString(number), dateString, stringType)
             if (callLogsHashMap.containsKey(myCallLog.contactNumber))
             {
                 var callsList = callLogsHashMap.get(myCallLog.contactNumber)
@@ -76,7 +81,7 @@ class MainViewModel : ViewModel()
             }
             else
             {
-                callLogsHashMap.put(myCallLog.contactNumber, arrayListOf(myCallLog.lastCallDate))
+                callLogsHashMap[myCallLog.contactNumber] = arrayListOf(myCallLog.lastCallDate)
                 callLogsNumbers.add(myCallLog)
             }
         }
