@@ -1,6 +1,8 @@
 package me.dwidar.realcaller.view
 
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -29,8 +31,14 @@ class MainActivity : AppCompatActivity()
         mainViewModel.checkForCallLogsPermission(applicationContext, this)
         mainViewModel.getCallLogsFromDevice(contentResolver)
 
-        mainViewModel.getCallLogsNumbers().observe(this){
-            callLogsAdapter = CallLogsAdapter(it)
+        mainViewModel.getCallLogsNumbers().observe(this)
+        {
+            callLogsAdapter = CallLogsAdapter(it){ number ->
+                val callIntent = Intent(Intent.ACTION_DIAL).apply {
+                    data = Uri.parse("tel:${number}")
+                }
+                startActivity(callIntent)
+            }
             mainBinding.listCallLogs.adapter = callLogsAdapter
         }
     }

@@ -1,13 +1,14 @@
 package me.dwidar.realcaller.model.adapters
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import me.dwidar.realcaller.databinding.CallLogItemBinding
 import me.dwidar.realcaller.model.components.MyCallLog
 
-class CallLogsAdapter(private val myCallLogs : ArrayList<MyCallLog>) : RecyclerView.Adapter<CallLogsAdapter.MyViewHolder>()
+class CallLogsAdapter(private val myCallLogs : ArrayList<MyCallLog>, val onCallLogClickListener: (String) -> Unit) : RecyclerView.Adapter<CallLogsAdapter.MyViewHolder>()
 {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder
     {
@@ -20,6 +21,10 @@ class CallLogsAdapter(private val myCallLogs : ArrayList<MyCallLog>) : RecyclerV
         holder.bindItem(currentCallLog)
         holder.itemBinding.btnGoDetails.setOnClickListener {
             Log.d("Contact Details click", "contact: ${currentCallLog.contactName}")
+        }
+
+        holder.itemBinding.contactLayout.setOnClickListener {
+            onCallLogClickListener(currentCallLog.contactNumber)
         }
     }
 
