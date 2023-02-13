@@ -1,10 +1,11 @@
 package me.dwidar.realcaller.view
-
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import me.dwidar.realcaller.databinding.ActivityMainBinding
 import me.dwidar.realcaller.databinding.MainActionBarBinding
@@ -17,6 +18,7 @@ class MainActivity : AppCompatActivity()
     private lateinit var customActionBarBinding: MainActionBarBinding
     private lateinit var mainViewModel: MainViewModel
     private lateinit var callLogsAdapter : CallLogsAdapter
+    private var phoneInit = ""
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -34,10 +36,7 @@ class MainActivity : AppCompatActivity()
         mainViewModel.getCallLogsNumbers().observe(this)
         {
             callLogsAdapter = CallLogsAdapter(it){ number ->
-                val callIntent = Intent(Intent.ACTION_DIAL).apply {
-                    data = Uri.parse("tel:${number}")
-                }
-                startActivity(callIntent)
+                makePhoneCall(number)
             }
             mainBinding.listCallLogs.adapter = callLogsAdapter
         }
@@ -50,6 +49,30 @@ class MainActivity : AppCompatActivity()
         {
             mainViewModel.getCallLogsFromDevice(contentResolver)
         }
+
+        if (requestCode == 1 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            makePhoneCall(phoneInit)
+        }
     }
 
+    private fun makePhoneCall(number : String)
+    {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED)
+        {
+            val callIntent = Intent(Intent.ACTION_CALL).apply {
+                data = Uri.parse("tel:${number}")
+            }
+            startActivity(callIntent)
+        }
+        else {
+
+            phoneInit = number
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CALL_PHONE),
+                1
+            )
+        }
+    }
 }
