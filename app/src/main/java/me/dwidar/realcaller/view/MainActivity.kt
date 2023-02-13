@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import me.dwidar.realcaller.databinding.ActivityMainBinding
 import me.dwidar.realcaller.databinding.MainActionBarBinding
 import me.dwidar.realcaller.model.adapters.CallLogsAdapter
+import me.dwidar.realcaller.model.interfaces.CallLogActionListener
 import me.dwidar.realcaller.viewModel.MainViewModel
 
 class MainActivity : AppCompatActivity()
@@ -35,9 +36,18 @@ class MainActivity : AppCompatActivity()
 
         mainViewModel.getCallLogsNumbers().observe(this)
         {
-            callLogsAdapter = CallLogsAdapter(it){ number ->
-                makePhoneCall(number)
-            }
+            callLogsAdapter = CallLogsAdapter(it, object : CallLogActionListener {
+                override fun onCallLogItemClick(phoneNumber: String)
+                {
+                    makePhoneCall(phoneNumber)
+                }
+
+                override fun onCallLogContactDetailsClick(phoneNumber: String)
+                {
+                    val detailsIntent = Intent(this@MainActivity, ContactDetailsActivity::class.java)
+                    startActivity(detailsIntent)
+                }
+            })
             mainBinding.listCallLogs.adapter = callLogsAdapter
         }
     }

@@ -75,9 +75,9 @@ class MainViewModel : ViewModel()
             var myCallLog = MyCallLog(nm, result.getString(number), dateString, stringType)
             if (callLogsHashMap.containsKey(myCallLog.contactNumber))
             {
-                var callsList = callLogsHashMap.get(myCallLog.contactNumber)
+                var callsList = callLogsHashMap[myCallLog.contactNumber]
                 callsList!!.add(myCallLog.lastCallDate)
-                callLogsHashMap.put(myCallLog.contactNumber, callsList)
+                callLogsHashMap[myCallLog.contactNumber] = callsList
             }
             else
             {
