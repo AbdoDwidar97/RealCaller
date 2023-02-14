@@ -4,16 +4,20 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
+import dagger.hilt.android.AndroidEntryPoint
 import me.dwidar.realcaller.databinding.ActivityMainBinding
 import me.dwidar.realcaller.databinding.MainActionBarBinding
 import me.dwidar.realcaller.model.adapters.CallLogsAdapter
 import me.dwidar.realcaller.model.interfaces.CallLogActionListener
 import me.dwidar.realcaller.viewModel.ContactDetailsViewModel
 import me.dwidar.realcaller.viewModel.MainViewModel
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity()
 {
     private lateinit var mainBinding: ActivityMainBinding
@@ -22,6 +26,9 @@ class MainActivity : AppCompatActivity()
     private lateinit var contactDetailsViewModel: ContactDetailsViewModel
     private lateinit var callLogsAdapter : CallLogsAdapter
     private var phoneInit = ""
+
+    @Inject
+    lateinit var randString : String
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -36,6 +43,8 @@ class MainActivity : AppCompatActivity()
 
         mainViewModel.checkForCallLogsPermission(applicationContext, this)
         mainViewModel.getCallLogsFromDevice(contentResolver)
+
+        Toast.makeText(this, randString, Toast.LENGTH_SHORT).show()
 
         mainViewModel.getCallLogsNumbers().observe(this)
         {
