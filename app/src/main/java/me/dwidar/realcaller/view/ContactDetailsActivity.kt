@@ -13,5 +13,9 @@ class ContactDetailsActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         binding = ActivityContactDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
     }
 }
