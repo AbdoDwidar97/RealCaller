@@ -18,7 +18,7 @@ class CallLogsAdapter(private val myCallLogs : ArrayList<MyCallLog>, private val
         val currentCallLog = myCallLogs[position]
         holder.bindItem(currentCallLog)
         holder.itemBinding.btnGoDetails.setOnClickListener {
-            callLogActionListener.onCallLogContactDetailsClick(currentCallLog.contactNumber)
+            callLogActionListener.onCallLogContactDetailsClick(position)
         }
 
         holder.itemBinding.contactLayout.setOnClickListener {

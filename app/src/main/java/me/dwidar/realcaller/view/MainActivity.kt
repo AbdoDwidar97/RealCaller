@@ -11,6 +11,7 @@ import me.dwidar.realcaller.databinding.ActivityMainBinding
 import me.dwidar.realcaller.databinding.MainActionBarBinding
 import me.dwidar.realcaller.model.adapters.CallLogsAdapter
 import me.dwidar.realcaller.model.interfaces.CallLogActionListener
+import me.dwidar.realcaller.viewModel.ContactDetailsViewModel
 import me.dwidar.realcaller.viewModel.MainViewModel
 
 class MainActivity : AppCompatActivity()
@@ -18,6 +19,7 @@ class MainActivity : AppCompatActivity()
     private lateinit var mainBinding: ActivityMainBinding
     private lateinit var customActionBarBinding: MainActionBarBinding
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var contactDetailsViewModel: ContactDetailsViewModel
     private lateinit var callLogsAdapter : CallLogsAdapter
     private var phoneInit = ""
 
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity()
         setSupportActionBar(customActionBarBinding.root)
 
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        contactDetailsViewModel = ViewModelProvider(this)[ContactDetailsViewModel::class.java]
 
         mainViewModel.checkForCallLogsPermission(applicationContext, this)
         mainViewModel.getCallLogsFromDevice(contentResolver)
@@ -42,8 +45,10 @@ class MainActivity : AppCompatActivity()
                     makePhoneCall(phoneNumber)
                 }
 
-                override fun onCallLogContactDetailsClick(phoneNumber: String)
+                override fun onCallLogContactDetailsClick(itemIdx : Int)
                 {
+                    contactDetailsViewModel.selectContact(mainViewModel.getCallLogsNumbers().value!![itemIdx])
+
                     val detailsIntent = Intent(this@MainActivity, ContactDetailsActivity::class.java)
                     startActivity(detailsIntent)
                 }
