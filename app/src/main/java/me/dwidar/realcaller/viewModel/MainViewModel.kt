@@ -6,14 +6,17 @@ import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.provider.CallLog
 import android.text.format.DateFormat
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import me.dwidar.realcaller.model.components.MyCallLog
 import me.dwidar.realcaller.model.enums.AppCallLogType
+import java.time.Duration
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -22,12 +25,13 @@ class MainViewModel : ViewModel()
 {
     private val localMyCallLogs : MutableLiveData<HashMap<String, ArrayList<String>>> = MutableLiveData()
     private val localMyCallLogsNumbers : MutableLiveData<ArrayList<MyCallLog>> = MutableLiveData()
-    private val clomns = listOf<String> (
+    private val queryColumns = listOf<String> (
         CallLog.Calls._ID,
         CallLog.Calls.NUMBER,
         CallLog.Calls.TYPE,
         CallLog.Calls.DATE,
-        CallLog.Calls.CACHED_NAME
+        CallLog.Calls.CACHED_NAME,
+        CallLog.Calls.DURATION
     ).toTypedArray()
 
     fun getCallLogs() : LiveData<HashMap<String, ArrayList<String>>> = localMyCallLogs
@@ -42,17 +46,19 @@ class MainViewModel : ViewModel()
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("Recycle")
     fun getCallLogsFromDevice(contentResolver: ContentResolver)
     {
-        var result = contentResolver.query(CallLog.Calls.CONTENT_URI,
-            clomns, null, null,
+        val result = contentResolver.query(CallLog.Calls.CONTENT_URI,
+            queryColumns, null, null,
             "${CallLog.Calls.DATE} DESC")
 
-        var number = result!!.getColumnIndex(CallLog.Calls.NUMBER)
-        var type = result.getColumnIndex(CallLog.Calls.TYPE)
-        var callDate = result.getColumnIndex(CallLog.Calls.DATE)
-        var contactName = result.getColumnIndex(CallLog.Calls.CACHED_NAME)
+        val number = result!!.getColumnIndex(CallLog.Calls.NUMBER)
+        val type = result.getColumnIndex(CallLog.Calls.TYPE)
+        val callDate = result.getColumnIndex(CallLog.Calls.DATE)
+        val contactName = result.getColumnIndex(CallLog.Calls.CACHED_NAME)
+        val callLogDuration = result.getColumnIndex(CallLog.Calls.DURATION)
 
         val callLogsHashMap = HashMap<String, ArrayList<String>>()
         val callLogsNumbers = arrayListOf<MyCallLog>()
@@ -60,10 +66,9 @@ class MainViewModel : ViewModel()
         while (result.moveToNext())
         {
             val callType = result.getString(type).toInt()
-            var stringType = ""
-            var dateString = convertTimeStampToDate(result.getString(callDate).toLong())
+            val dateString = convertTimeStampToDate(result.getString(callDate).toLong())
 
-            stringType = when (callType) {
+            val stringType = when (callType) {
                 CallLog.Calls.OUTGOING_TYPE -> AppCallLogType.OutgoingCall.toString()
                 CallLog.Calls.INCOMING_TYPE -> AppCallLogType.ReceivedCall.toString()
                 CallLog.Calls.MISSED_TYPE -> AppCallLogType.MissedCall.toString()
@@ -73,10 +78,10 @@ class MainViewModel : ViewModel()
             var nm = result.getString(number)
             if (result.getString(contactName) != null) nm = result.getString(contactName)
 
-            var myCallLog = MyCallLog(nm, result.getString(number), dateString, stringType)
+            val myCallLog = MyCallLog(nm, result.getString(number), dateString, stringType, result.getString(callLogDuration))
             if (callLogsHashMap.containsKey(myCallLog.contactNumber))
             {
-                var callsList = callLogsHashMap[myCallLog.contactNumber]
+                val callsList = callLogsHashMap[myCallLog.contactNumber]
                 callsList!!.add(myCallLog.lastCallDate)
                 callLogsHashMap[myCallLog.contactNumber] = callsList
             }
