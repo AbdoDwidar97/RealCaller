@@ -9,6 +9,7 @@ import me.dwidar.realcaller.databinding.ActivityMainBinding
 import me.dwidar.realcaller.databinding.MainActionBarBinding
 import me.dwidar.realcaller.model.adapters.CallLogsAdapter
 import me.dwidar.realcaller.model.components.AppConstants
+import me.dwidar.realcaller.model.components.MyCallLog
 import me.dwidar.realcaller.model.interfaces.CallLogActionListener
 import me.dwidar.realcaller.model.interfaces.OnMakePhoneCall
 import me.dwidar.realcaller.viewModel.MainViewModel
@@ -46,20 +47,15 @@ class MainActivity : AppCompatActivity()
             callLogsAdapter = CallLogsAdapter(it, object : CallLogActionListener {
                 override fun onCallLogItemClick(phoneNumber: String)
                 {
-                    selectedPhoneNumber = phoneNumber
-                    onMakePhoneCall.makePhoneCall(this@MainActivity, phoneNumber)
+                    callLogItemClick(phoneNumber)
                 }
 
                 override fun onCallLogContactDetailsClick(itemIdx : Int)
                 {
-                    val detailsIntent = Intent(this@MainActivity, ContactDetailsActivity::class.java).apply {
-                        putExtra(appConstants.CALL_LOG_KEY, it[itemIdx])
-                        val history : Array<String> = mainViewModel.getCallLogs().value!![it[itemIdx].contactNumber]!!.toTypedArray()
-                        putExtra(appConstants.CONTACT_HISTORY_KEY, history)
-                    }
-                    startActivity(detailsIntent)
+                    callLogContactDetailsClick(it, itemIdx)
                 }
             })
+
             mainBinding.listCallLogs.adapter = callLogsAdapter
         }
     }
@@ -77,24 +73,19 @@ class MainActivity : AppCompatActivity()
         }
     }
 
-    /*private fun makePhoneCall(number : String)
+    private fun callLogItemClick(phoneNumber: String)
     {
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED)
-        {
-            val callIntent = Intent(Intent.ACTION_CALL).apply {
-                data = Uri.parse("tel:${number}")
-            }
-            startActivity(callIntent)
-        }
-        else {
+        selectedPhoneNumber = phoneNumber
+        onMakePhoneCall.makePhoneCall(this@MainActivity, phoneNumber)
+    }
 
-            phoneInit = number
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.CALL_PHONE),
-                1
-            )
+    private fun callLogContactDetailsClick(callLogs: ArrayList<MyCallLog>, itemIdx: Int)
+    {
+        val detailsIntent = Intent(this@MainActivity, ContactDetailsActivity::class.java).apply {
+            putExtra(appConstants.CALL_LOG_KEY, callLogs[itemIdx])
+            val history : Array<String> = mainViewModel.getCallLogs().value!![callLogs[itemIdx].contactNumber]!!.toTypedArray()
+            putExtra(appConstants.CONTACT_HISTORY_KEY, history)
         }
-    }*/
+        startActivity(detailsIntent)
+    }
 }
