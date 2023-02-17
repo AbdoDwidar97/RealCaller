@@ -1,6 +1,7 @@
 package me.dwidar.realcaller.di
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -16,6 +17,7 @@ import dagger.hilt.components.SingletonComponent
 import me.dwidar.realcaller.MyApp
 import me.dwidar.realcaller.model.components.AppConstants
 import me.dwidar.realcaller.model.interfaces.OnMakePhoneCall
+import me.dwidar.realcaller.model.interfaces.OnSendSMS
 import javax.inject.Singleton
 
 @Module
@@ -70,4 +72,21 @@ object AppModule
         }
     }
 
+    @Singleton
+    @Provides
+    fun provideOnSendSMS() : OnSendSMS
+    {
+        return object : OnSendSMS
+        {
+            @SuppressLint("QueryPermissionsNeeded")
+            override fun sendSMS(myActivity: AppCompatActivity, phoneNumber: String)
+            {
+                val intent = Intent(Intent.ACTION_SENDTO).apply {
+                    data = Uri.parse("sms:${phoneNumber}")
+                }
+
+                myActivity.startActivity(intent)
+            }
+        }
+    }
 }

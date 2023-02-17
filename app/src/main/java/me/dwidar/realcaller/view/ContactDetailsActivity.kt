@@ -12,6 +12,7 @@ import me.dwidar.realcaller.extensions.serializable
 import me.dwidar.realcaller.model.components.AppConstants
 import me.dwidar.realcaller.model.components.MyCallLog
 import me.dwidar.realcaller.model.interfaces.OnMakePhoneCall
+import me.dwidar.realcaller.model.interfaces.OnSendSMS
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -23,6 +24,8 @@ class ContactDetailsActivity : AppCompatActivity()
     lateinit var constants: AppConstants
     @Inject
     lateinit var onMakePhoneCall: OnMakePhoneCall
+    @Inject
+    lateinit var onSendSMS: OnSendSMS
 
     private lateinit var myCallLog: MyCallLog
     private lateinit var contactHistory: Array<String>
@@ -80,6 +83,14 @@ class ContactDetailsActivity : AppCompatActivity()
 
         binding.btnCallNumber.setOnClickListener {
             onMakePhoneCall.makePhoneCall(this, myCallLog.contactNumber)
+        }
+
+        binding.btnSendMessage.setOnClickListener {
+            onSendSMS.sendSMS(this, myCallLog.contactNumber)
+        }
+
+        binding.btnSendMsgNumber.setOnClickListener {
+            onSendSMS.sendSMS(this, myCallLog.contactNumber)
         }
     }
 }
