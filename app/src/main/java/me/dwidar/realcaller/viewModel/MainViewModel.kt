@@ -13,6 +13,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import me.dwidar.realcaller.model.components.MyCallLog
+import me.dwidar.realcaller.model.enums.AppCallLogType
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -63,10 +64,10 @@ class MainViewModel : ViewModel()
             var dateString = convertTimeStampToDate(result.getString(callDate).toLong())
 
             stringType = when (callType) {
-                CallLog.Calls.OUTGOING_TYPE -> "Outgoing call"
-                CallLog.Calls.INCOMING_TYPE -> "Received call"
-                CallLog.Calls.MISSED_TYPE -> "Missed call"
-                else -> "H5a"
+                CallLog.Calls.OUTGOING_TYPE -> AppCallLogType.OutgoingCall.toString()
+                CallLog.Calls.INCOMING_TYPE -> AppCallLogType.ReceivedCall.toString()
+                CallLog.Calls.MISSED_TYPE -> AppCallLogType.MissedCall.toString()
+                else -> AppCallLogType.OtherCall.toString()
             }
 
             var nm = result.getString(number)
