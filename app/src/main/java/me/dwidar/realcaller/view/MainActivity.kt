@@ -1,12 +1,8 @@
 package me.dwidar.realcaller.view
-import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import dagger.hilt.android.AndroidEntryPoint
 import me.dwidar.realcaller.databinding.ActivityMainBinding
@@ -14,6 +10,7 @@ import me.dwidar.realcaller.databinding.MainActionBarBinding
 import me.dwidar.realcaller.model.adapters.CallLogsAdapter
 import me.dwidar.realcaller.model.components.AppConstants
 import me.dwidar.realcaller.model.interfaces.CallLogActionListener
+import me.dwidar.realcaller.model.interfaces.OnMakePhoneCall
 import me.dwidar.realcaller.viewModel.MainViewModel
 import javax.inject.Inject
 
@@ -24,10 +21,12 @@ class MainActivity : AppCompatActivity()
     private lateinit var customActionBarBinding: MainActionBarBinding
     private lateinit var mainViewModel: MainViewModel
     private lateinit var callLogsAdapter : CallLogsAdapter
-    private var phoneInit = ""
+    private lateinit var selectedPhoneNumber : String
 
     @Inject
     lateinit var appConstants : AppConstants
+    @Inject
+    lateinit var onMakePhoneCall: OnMakePhoneCall
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -47,7 +46,8 @@ class MainActivity : AppCompatActivity()
             callLogsAdapter = CallLogsAdapter(it, object : CallLogActionListener {
                 override fun onCallLogItemClick(phoneNumber: String)
                 {
-                    makePhoneCall(phoneNumber)
+                    selectedPhoneNumber = phoneNumber
+                    onMakePhoneCall.makePhoneCall(this@MainActivity, phoneNumber)
                 }
 
                 override fun onCallLogContactDetailsClick(itemIdx : Int)
@@ -73,11 +73,11 @@ class MainActivity : AppCompatActivity()
         }
 
         if (requestCode == 1 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            makePhoneCall(phoneInit)
+            onMakePhoneCall.makePhoneCall(this, selectedPhoneNumber)
         }
     }
 
-    private fun makePhoneCall(number : String)
+    /*private fun makePhoneCall(number : String)
     {
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED)
@@ -96,5 +96,5 @@ class MainActivity : AppCompatActivity()
                 1
             )
         }
-    }
+    }*/
 }
